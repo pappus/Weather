@@ -12,8 +12,7 @@ struct ForecastListView: View {
 
     var body: some View {
         List(viewModel.forecasts) { forecast in
-            NavigationLink(
-                destination: ForecastDetailView(city: viewModel.cityName)) {
+            NavigationLink(destination: ForecastDetailView(city: viewModel.cityName)) {
                 HStack {
                     ForecastView(model: forecast)
                 }
@@ -22,4 +21,3 @@ struct ForecastListView: View {
         }
     }
 }
-
