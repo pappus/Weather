@@ -2,7 +2,6 @@
 //  AppDelegate.swift
 //  weatherApp
 //
-//  Created by Rene Saroza on 3/9/21.
 //
 
 import UIKit

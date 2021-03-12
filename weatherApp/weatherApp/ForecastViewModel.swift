@@ -2,13 +2,20 @@
 //  ForecastViewModel.swift
 //  weatherApp
 //
-//  Created by Rene Saroza on 3/10/21.
 //
 
 import Foundation
 
 struct ForecastViewModel: Identifiable {
     let id = UUID()
-    let weatherCondition: String
+    let weatherDescription: String
     let temperature: String
+    let forecastDetail: ForecastDetailViewModel
+
+    struct ForecastDetailViewModel {
+        let temperature: String
+        let feelsLikeDescription: String
+        let weatherDescription: String
+        let weatherDescriptionLong: String
+    }
 }
