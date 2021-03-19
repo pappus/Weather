@@ -45,9 +45,12 @@ struct CityNameView: View {
 
     func fetchForecasts(for city: String) {
         print("fetching forecasts for city \(city)")
-        forecastsModel.fetchForecasts(for: city)
-        self.isNavigationLinkActive = true
-        self.forecastsListView = AnyView(ForecastsListView(forecastsStore: self.forecastsModel))
+        forecastsModel.fetchForecasts(for: city) { error in
+            if error == true {
+                self.isNavigationLinkActive = true
+                self.forecastsListView = AnyView(ForecastsListView(forecastListViewModel: forecastsModel.weatherForecastsListViewModel))
+            }
+        }
     }
 }
 
