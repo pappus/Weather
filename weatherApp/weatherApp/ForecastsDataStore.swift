@@ -6,14 +6,6 @@
 
 import Foundation
 
-// Data Model
-struct WeatherForecastModel: Codable {
-    let weatherCondition: String
-    let temperature: String
-    let feelsLike: String
-    let weatherConditionDescription: String
-}
-
 // Data Manager
 class ForecastsDataStore: ObservableObject {
     var currentCity: String = ""
