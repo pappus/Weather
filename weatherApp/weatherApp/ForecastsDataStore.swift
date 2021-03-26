@@ -23,13 +23,20 @@ class ForecastsDataStore: ObservableObject {
     
     }
 
-    func fetchForecasts(for city: String, completion: @escaping (Bool) -> ()) {
-        DispatchQueue.global().asyncAfter(deadline: DispatchTime.now()) {
-            // Load a list of WeatherForecast data model objects
-            let weatherForcasts: WeatherForecasts = self.load("forecastResponseMiamiBeach.json")
-            print("finished loading forecasts ... number of forecasts \(weatherForcasts.list.count)")
-            self.loadWeatherForecastsViewModel(from: weatherForcasts)
-            completion(true)
+    func fetchForecasts(for cityID: String, completion: @escaping (Bool) -> ()) {
+        self.fetchForecastData(with: cityID) { data, result, error in
+            if let data = data {
+                do {
+                    let model = try JSONDecoder().decode(WeatherForecasts.self, from: data)
+                    self.loadWeatherForecastsViewModel(from: model)
+                    completion(true)
+                } catch {
+                    completion(false)
+                }
+                completion(true)
+            } else {
+                
+            }
         }
     }
 
@@ -46,25 +53,15 @@ class ForecastsDataStore: ObservableObject {
         }
     }
     
-    private func load<T: Decodable>(_ filename: String) -> T {
-        let data: Data
+    private func fetchForecastData(with cityID: String, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        let urlPath = "https://api.openweathermap.org/data/2.5/forecast?id=\(cityID)&units=metric&appid=c076b836542bcdc87aba03ac1ef8334e"
         
-        guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-            else {
-                fatalError("Couldn't find \(filename) in main bundle.")
-        }
+        guard let url = URL(string: urlPath) else { completion(nil, nil, nil); return }
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
         
-        do {
-            data = try Data(contentsOf: file)
-        } catch {
-            fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-        }
-        
-        do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
-        }
+        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            completion (data, response, error)
+        }.resume()
     }
 }

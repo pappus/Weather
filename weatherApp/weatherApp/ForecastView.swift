@@ -8,6 +8,7 @@ import SwiftUI
 
 struct ForecastView: View {
     let viewModel: ForecastViewModel
+
     var body: some View {
         HStack {
             Text(viewModel.weatherDescription)
