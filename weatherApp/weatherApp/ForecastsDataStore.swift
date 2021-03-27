@@ -11,28 +11,31 @@ class ForecastsDataStore: ObservableObject {
     var currentCity: String = ""
     var weatherForecastsListViewModel: ForecastsListViewModel = ForecastsListViewModel(cityName: "",
                                                                                        forecasts: [])
+    @Published var weatherForecastsAvailable: Bool = false
+    
     init() {
     
     }
 
-    func fetchForecasts(for cityID: String, completion: @escaping (Bool) -> ()) {
+    func fetchForecasts(for cityID: String) {
         self.fetchForecastData(with: cityID) { data, result, error in
             if let data = data {
                 do {
                     let model = try JSONDecoder().decode(WeatherForecasts.self, from: data)
-                    self.loadWeatherForecastsViewModel(from: model)
-                    completion(true)
+                    let weatherForecastViewModelList: Array<ForecastViewModel>
+                    weatherForecastViewModelList = self.loadWeatherForecastsViewModel(from: model)
+                    self.weatherForecastsListViewModel = ForecastsListViewModel(cityName: model.city.name, forecasts: weatherForecastViewModelList)
+                    // TODO - Add validation logic to check whether we have forecast data available before setting property
+                    DispatchQueue.main.async { self.weatherForecastsAvailable = true }
                 } catch {
-                    completion(false)
+                    // TODO - Add error handling ...
+                    
                 }
-                completion(true)
-            } else {
-                
             }
         }
     }
 
-    func loadWeatherForecastsViewModel(from model: WeatherForecasts) {
+    private func loadWeatherForecastsViewModel(from model: WeatherForecasts) -> Array<ForecastViewModel> {
         var weatherForecastViewModelList = Array<ForecastViewModel>()
         for forecastData in model.list {
             weatherForecastViewModelList.append(ForecastViewModel(weatherDescription: forecastData.weather.first?.main.description ?? "N/A",
@@ -41,8 +44,8 @@ class ForecastsDataStore: ObservableObject {
                                                                                                                             weatherDescription: forecastData.weather.first?.main ?? "N/A",
                                                                                                                             weatherDescriptionLong: forecastData.weather.first?.description ?? "N/A")))
             
-            self.weatherForecastsListViewModel = ForecastsListViewModel(cityName: model.city.name, forecasts: weatherForecastViewModelList)
         }
+        return weatherForecastViewModelList
     }
     
     private func fetchForecastData(with cityID: String, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {

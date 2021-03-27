@@ -8,7 +8,7 @@ import SwiftUI
 
 struct ForecastsListView: View {
     let forecastListViewModel: ForecastsListViewModel
-
+    
     var body: some View {
         List(forecastListViewModel.forecasts) { forecast in
             NavigationLink(destination: ForecastDetailView(city: forecastListViewModel.cityName,
