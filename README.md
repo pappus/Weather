@@ -1,1 +1,1 @@
-# Weather App for iOS
+# Weather for iOS
