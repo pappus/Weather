@@ -164,11 +164,19 @@
 		C5307CC72604080600E51C44 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C5307CFB260D3CF800E51C44 /* forecastResponseSanFrancisco.json */,
-				C5307CF52604132600E51C44 /* forecastResponseMiamiBeach.json */,
+				C542CD4F26126AA900678C7D /* Responses */,
 				C5307CC826040B3500E51C44 /* OpenWeatherMapDataModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		C542CD4F26126AA900678C7D /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				C5307CFB260D3CF800E51C44 /* forecastResponseSanFrancisco.json */,
+				C5307CF52604132600E51C44 /* forecastResponseMiamiBeach.json */,
+			);
+			path = Responses;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -14,21 +14,23 @@ class ForecastsDataStore: ObservableObject {
     @Published var weatherForecastsAvailable: Bool = false
     
     init() {
-    
+
     }
 
     func fetchForecasts(for cityID: String) {
         self.fetchForecastData(with: cityID) { data, result, error in
-            if let data = data {
+            // TODO - Handle transport error
+            
+            if let data = data, let response = result as? HTTPURLResponse {
+                // TODO - Handle responses for error codes 400s and 500s
                 do {
                     let model = try JSONDecoder().decode(WeatherForecasts.self, from: data)
-                    let weatherForecastViewModelList: Array<ForecastViewModel>
-                    weatherForecastViewModelList = self.loadWeatherForecastsViewModel(from: model)
+                    let weatherForecastViewModelList = self.loadWeatherForecastsViewModel(from: model)
                     self.weatherForecastsListViewModel = ForecastsListViewModel(cityName: model.city.name, forecasts: weatherForecastViewModelList)
                     // TODO - Add validation logic to check whether we have forecast data available before setting property
                     DispatchQueue.main.async { self.weatherForecastsAvailable = true }
                 } catch {
-                    // TODO - Add error handling ...
+                    // TODO - Handle decoding error
                     
                 }
             }
